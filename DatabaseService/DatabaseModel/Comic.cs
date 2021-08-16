@@ -14,10 +14,19 @@ namespace DatabaseService.DatabaseModel
     
     public partial class Comic
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Comic()
+        {
+            this.Books = new HashSet<Book>();
+        }
+    
         public System.Guid Id { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
         public string Status { get; set; }
         public int TotalVolume { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Book> Books { get; set; }
     }
 }

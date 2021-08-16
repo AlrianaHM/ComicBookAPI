@@ -7,6 +7,7 @@
       <Diagram DiagramId="95a7f03156d2422cb61a29ad91083657" Name="Diagram1">
         <EntityTypeShape EntityType="ComicBookModel.Book" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ComicBookModel.Comic" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="ComicBookModel.FK_Book_Comic" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
