@@ -66,7 +66,7 @@ namespace ComicBookAPI.Controllers
                 if (book != null)
                 {
                     BookServices.Update(book, new_book);
-                    return Request.CreateResponse(HttpStatusCode.Created, new_book);
+                    return Request.CreateResponse(HttpStatusCode.OK, new_book);
                 }
                 else
                 {
