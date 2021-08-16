@@ -26,5 +26,6 @@ namespace DatabaseService.DatabaseModel
         }
     
         public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<Comic> Comics { get; set; }
     }
 }
