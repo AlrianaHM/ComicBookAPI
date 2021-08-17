@@ -17,5 +17,10 @@ namespace DatabaseService.DatabaseModel
         public System.Guid Id { get; set; }
         public Nullable<System.DateTime> Release_Date { get; set; }
         public string Cover { get; set; }
+        public System.Guid ComicId { get; set; }
+        public int VolumeNumber { get; set; }
+        public bool IsHave { get; set; }
+    
+        public virtual Comic Comic { get; set; }
     }
 }

@@ -10,8 +10,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ComicId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Release_Date" Type="datetime" />
           <Property Name="Cover" Type="nvarchar(max)" />
+          <Property Name="VolumeNumber" Type="int" Nullable="false" />
+          <Property Name="IsHave" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Comic">
           <Key>
@@ -23,9 +26,27 @@
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalVolume" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Book_Comic">
+          <End Role="Comic" Type="Self.Comic" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Book" Type="Self.Book" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comic">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Book">
+              <PropertyRef Name="ComicId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="ComicBookModelStoreContainer">
           <EntitySet Name="Book" EntityType="Self.Book" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Comic" EntityType="Self.Comic" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Book_Comic" Association="Self.FK_Book_Comic">
+            <End Role="Comic" EntitySet="Comic" />
+            <End Role="Book" EntitySet="Book" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -38,10 +59,18 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="Release_Date" Type="DateTime" Precision="3" />
           <Property Name="Cover" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ComicId" Type="Guid" Nullable="false" />
+          <Property Name="VolumeNumber" Type="Int32" Nullable="false" />
+          <Property Name="IsHave" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Comic" Relationship="ComicBookModel.FK_Book_Comic" FromRole="Book" ToRole="Comic" />
         </EntityType>
         <EntityContainer Name="ComicBookEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Books" EntityType="Self.Book" />
           <EntitySet Name="Comics" EntityType="ComicBookModel.Comic" />
+          <AssociationSet Name="FK_Book_Comic" Association="ComicBookModel.FK_Book_Comic">
+            <End Role="Comic" EntitySet="Comics" />
+            <End Role="Book" EntitySet="Books" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Comic">
           <Key>
@@ -52,7 +81,22 @@
           <Property Name="Author" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TotalVolume" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Books" Relationship="ComicBookModel.FK_Book_Comic" FromRole="Comic" ToRole="Book" />
         </EntityType>
+        <Association Name="FK_Book_Comic">
+          <End Type="ComicBookModel.Comic" Role="Comic" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ComicBookModel.Book" Role="Book" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comic">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Book">
+              <PropertyRef Name="ComicId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -62,6 +106,9 @@
           <EntitySetMapping Name="Books">
             <EntityTypeMapping TypeName="ComicBookModel.Book">
               <MappingFragment StoreEntitySet="Book">
+                <ScalarProperty Name="IsHave" ColumnName="IsHave" />
+                <ScalarProperty Name="VolumeNumber" ColumnName="VolumeNumber" />
+                <ScalarProperty Name="ComicId" ColumnName="ComicId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Release_Date" ColumnName="Release_Date" />
                 <ScalarProperty Name="Cover" ColumnName="Cover" />

@@ -30,8 +30,6 @@ namespace DatabaseService.Services
         {
             using (ComicBookEntities entities = new ComicBookEntities())
             {
-                new_book.Id = Guid.NewGuid();
-                
                 entities.Books.Add(new_book);
                 entities.SaveChanges();
             }
@@ -41,8 +39,13 @@ namespace DatabaseService.Services
         {
             using (ComicBookEntities entities = new ComicBookEntities())
             {
+                entities.Books.Attach(current_book);
+
                 current_book.Release_Date = new_book.Release_Date;
                 current_book.Cover = new_book.Cover;
+                current_book.ComicId = new_book.ComicId;
+                current_book.VolumeNumber = new_book.VolumeNumber;
+                current_book.IsHave = new_book.IsHave;
 
                 entities.SaveChanges();
             }
