@@ -1,4 +1,5 @@
 ﻿using DatabaseService.DatabaseModel;
+using DatabaseService.Dto;
 using DatabaseService.Services;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace ComicBookAPI.Controllers
         {
             try
             {
-                IEnumerable<Book> books = BookServices.GetAll();
+                IEnumerable<BookDto> books = BookServices.GetAll().Select(book => new BookDto(book));
                 return Request.CreateResponse(HttpStatusCode.OK, books);
             }
             catch (Exception ex)
@@ -32,7 +33,8 @@ namespace ComicBookAPI.Controllers
                 Book book = BookServices.GetById(id);
                 if (book != null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, book);
+                    BookDto dto = new BookDto(book);
+                    return Request.CreateResponse(HttpStatusCode.OK, dto);
                 }
                 else
                 {
@@ -45,11 +47,12 @@ namespace ComicBookAPI.Controllers
             }
         }
 
-        public HttpResponseMessage Post([FromBody]Book new_book)
+        public HttpResponseMessage Post([FromBody]BookDto new_book)
         {
             try
             {
-                BookServices.Create(new_book);
+                Book book = new_book.ToBook();
+                BookServices.Create(book);
                 return Request.CreateResponse(HttpStatusCode.Created, new_book);
             }
             catch (Exception ex)
@@ -58,14 +61,14 @@ namespace ComicBookAPI.Controllers
             }
         }
 
-        public HttpResponseMessage Put(Guid id, [FromBody]Book new_book)
+        public HttpResponseMessage Put(Guid id, [FromBody]BookDto new_book)
         {
             try
             {
                 Book book = BookServices.GetById(id);
                 if (book != null)
                 {
-                    BookServices.Update(book, new_book);
+                    BookServices.Update(book, new_book.ToBook());
                     return Request.CreateResponse(HttpStatusCode.OK, new_book);
                 }
                 else

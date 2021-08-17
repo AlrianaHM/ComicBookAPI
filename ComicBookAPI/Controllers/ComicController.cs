@@ -1,4 +1,5 @@
 ﻿using DatabaseService.DatabaseModel;
+using DatabaseService.Dto;
 using DatabaseService.Services;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace ComicBookAPI.Controllers
         {
             try
             {
-                IEnumerable<Comic> comics = ComicServices.GetAll();
+                IEnumerable<ComicDto> comics = ComicServices.GetAll().Select(comic => new ComicDto(comic));
                 return Request.CreateResponse(HttpStatusCode.OK, comics);
             }
             catch (Exception ex)
@@ -31,7 +32,8 @@ namespace ComicBookAPI.Controllers
                 Comic comic = ComicServices.GetById(id);
                 if (comic != null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.OK, comic);
+                    ComicDto dto = new ComicDto(comic);
+                    return Request.CreateResponse(HttpStatusCode.OK, dto);
                 }
                 else
                 {
@@ -44,11 +46,11 @@ namespace ComicBookAPI.Controllers
             }
         }
 
-        public HttpResponseMessage Post([FromBody]Comic new_comic)
+        public HttpResponseMessage Post([FromBody]ComicDto new_comic)
         {
             try
             {
-                ComicServices.Create(new_comic);
+                ComicServices.Create(new_comic.ToComic());
                 return Request.CreateResponse(HttpStatusCode.Created, new_comic);
             }
             catch (Exception ex)
@@ -57,14 +59,14 @@ namespace ComicBookAPI.Controllers
             }
         }
 
-        public HttpResponseMessage Put(Guid id, [FromBody]Comic new_comic)
+        public HttpResponseMessage Put(Guid id, [FromBody]ComicDto new_comic)
         {
             try
             {
                 Comic comic = ComicServices.GetById(id);
                 if (comic != null)
                 {
-                    ComicServices.Update(comic, new_comic);
+                    ComicServices.Update(comic, new_comic.ToComic());
                     return Request.CreateResponse(HttpStatusCode.OK, new_comic);
                 }
                 else
