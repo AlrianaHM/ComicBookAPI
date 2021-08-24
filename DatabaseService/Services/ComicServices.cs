@@ -1,4 +1,5 @@
 ﻿using DatabaseService.DatabaseModel;
+using DatabaseService.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,35 @@ namespace DatabaseService.Services
                 entities.Comics.Attach(deleted_comic);
                 entities.Comics.Remove(deleted_comic);
                 entities.SaveChanges();
+            }
+        }
+
+        public static IEnumerable<Comic> Search(ComicSearchQueryDto query)
+        {
+            using (ComicBookEntities entities = new ComicBookEntities())
+            {
+                IQueryable<Comic> comicList = entities.Comics;
+                if (!string.IsNullOrEmpty(query.Title))
+                {
+                    comicList = comicList.Where(c => c.Title.ToLower().Contains(query.Title.ToLower()));
+                }
+
+                if (!string.IsNullOrEmpty(query.Author))
+                {
+                    comicList = comicList.Where(c => c.Author.ToLower().Contains(query.Author.ToLower()));
+                }
+
+                if (!string.IsNullOrEmpty(query.Status))
+                {
+                    comicList = comicList.Where(c => c.Status.Equals(query.Status, StringComparison.InvariantCultureIgnoreCase));
+                }
+
+                if (query.TotalVolume >= 0)
+                {
+                    comicList = comicList.Where(c => c.TotalVolume == query.TotalVolume);
+                }
+
+                return comicList.ToList();
             }
         }
     }
