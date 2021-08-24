@@ -122,5 +122,23 @@ namespace ComicBookAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("api/Comic/Search")]
+        public HttpResponseMessage Search([FromBody]ComicSearchQueryDto query)
+        {
+            try
+            {
+                IEnumerable<ComicDto> comics = ComicServices.Search(query).Select(comic => new ComicDto(comic));
+
+                log.Info("[Search Comics] Get all comics " + query.Print());
+                return Request.CreateResponse(HttpStatusCode.OK, comics);
+            }
+            catch (Exception ex)
+            {
+                log.Error("[Search Comics] Error: ", ex.InnerException);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
     }
 }
